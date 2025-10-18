@@ -2,7 +2,12 @@
 
 **Sistema de Monitoramento DevOps em Tempo Real**
 
-![Dashboard Screenshot](static/images/dashboard.png)
+![Dashboard Screenshot](./static/images/dashboard_funcionando.png)
+
+**fluxograma da arquitetura surgerida**
+
+![Dashboard Screenshot](./static/images/devops_monitor_architecture.png)
+
 
 ## 🌟 Visão Geral
 Este projeto implementa um painel de monitoramento DevOps em tempo real usando:
@@ -19,6 +24,7 @@ Este projeto implementa um painel de monitoramento DevOps em tempo real usando:
 5. Sistema de alertas e histórico de métricas
 
 ## 📁 Estrutura do Repositório
+
 
 ├── app.py
 ├── config.py
