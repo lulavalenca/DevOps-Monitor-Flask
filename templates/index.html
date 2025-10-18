@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Monitor - Dashboard em Tempo Real</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-chart-line"></i> DevOps Monitor
+            </span>
+            <div class="d-flex align-items-center">
+                <button id="refreshBtn" class="btn btn-sm btn-outline-light me-2 btn-refresh">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+                <span id="connection-status" class="badge bg-success">
+                    <i class="fas fa-wifi"></i> Conectando...
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid mt-4">
+
+        <!-- Metrics Cards Row -->
+        <div class="row mb-4">
+            <!-- CPU Card -->
+            <div class="col-md-3 col-sm-6">
+                <div class="card metric-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-microchip fa-2x text-primary me-3"></i>
+                            <div class="flex-grow-1">
+                                <h6 class="card-title mb-1 text-muted">CPU</h6>
+                                <div id="cpu-value" class="metric-value text-primary">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory Card -->
+            <div class="col-md-3 col-sm-6">
+                <div class="card metric-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-memory fa-2x text-success me-3"></i>
+                            <div class="flex-grow-1">
+                                <h6 class="card-title mb-1 text-muted">Memória</h6>
+                                <div id="memory-value" class="metric-value text-success">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disk Card -->
+            <div class="col-md-3 col-sm-6">
+                <div class="card metric-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-hdd fa-2x text-warning me-3"></i>
+                            <div class="flex-grow-1">
+                                <h6 class="card-title mb-1 text-muted">Disco</h6>
+                                <div id="disk-value" class="metric-value text-warning">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Card -->
+            <div class="col-md-3 col-sm-6">
+                <div class="card metric-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-network-wired fa-2x text-info me-3"></i>
+                            <div class="flex-grow-1">
+                                <h6 class="card-title mb-1 text-muted">Rede</h6>
+                                <div id="network-value" class="metric-value text-info">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row">
+            <!-- CPU Chart -->
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line text-primary"></i> 
+                            CPU Usage (Tempo Real)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="cpuChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory Chart -->
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line text-success"></i> 
+                            Memory Usage (Tempo Real)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="memoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-exclamation-triangle text-warning"></i> 
+                            Alertas Recentes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="alerts-container">
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-check-circle text-success"></i> 
+                                Nenhum alerta no momento. Sistema operando normalmente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-4 mt-5">
+        <small>DevOps Monitor v1.0 | Monitoramento em Tempo Real</small>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
