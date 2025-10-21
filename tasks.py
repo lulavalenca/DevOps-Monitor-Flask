@@ -12,6 +12,7 @@ celery_app.config_from_object("config.Config", namespace="CELERY")
 REDIS_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
 redis_client = redis.from_url(REDIS_URL)
 
+
 @celery_app.task(name="tasks.save_metrics_to_redis")
 def save_metrics_to_redis(metrics):
     """
@@ -31,6 +32,7 @@ def save_metrics_to_redis(metrics):
         print(f"❌ Erro ao salvar métricas: {e}")
         return {"status": "error", "message": str(e)}
 
+
 @celery_app.task(name="tasks.send_alert")
 def send_alert(alert_data):
     """
@@ -49,6 +51,7 @@ def send_alert(alert_data):
     except Exception as e:
         print(f"❌ Erro ao enviar alerta: {e}")
         return {"status": "error", "message": str(e)}
+
 
 @celery_app.task(name="tasks.cleanup_old_metrics")
 def cleanup_old_metrics():
@@ -70,4 +73,3 @@ def cleanup_old_metrics():
     except Exception as e:
         print(f"❌ Erro na limpeza: {e}")
         return {"status": "error", "message": str(e)}
-

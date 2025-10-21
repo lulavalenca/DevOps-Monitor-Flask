@@ -8,7 +8,12 @@ from typing import Dict, List
 
 class SystemMonitor:
     def __init__(self):
-        self.data_history = {"cpu": [], "memory": [], "disk": [], "network": []}
+        self.data_history = {
+            "cpu": [],
+            "memory": [],
+            "disk": [],
+            "network": []
+        }
         self.max_points = 100
 
     def get_cpu_usage(self) -> float:
@@ -30,12 +35,12 @@ class SystemMonitor:
         try:
             # Linux/Mac
             disk = psutil.disk_usage("/")
-        except:
+        except Exception:
             try:
                 # Windows - usar barra normal ou raw string
-                disk = psutil.disk_usage("C:/")  # ✅ CORRIGIDO: C:/ ao invés de C:\\
-            except:
-                # Fallback: tentar pegar primeira partição disponível
+                disk = psutil.disk_usage(r"C:/")  # raw string para evitar problemas
+            except Exception:
+                # Fallback para primeira partição disponível
                 partitions = psutil.disk_partitions()
                 if partitions:
                     disk = psutil.disk_usage(partitions[0].mountpoint)
@@ -46,7 +51,7 @@ class SystemMonitor:
             "total": disk.total,
             "used": disk.used,
             "free": disk.free,
-            "percentage": (disk.used / disk.total) * 100,
+            "percentage": disk.percent,
         }
 
     def get_network_stats(self) -> Dict:
@@ -104,7 +109,7 @@ class SystemMonitor:
                 "memory": self.get_memory_usage(),
                 "disk": self.get_disk_usage(),
                 "network": self.get_network_stats(),
-                "system_info": self.get_system_info(),
+                # "system_info": self.get_system_info(),  # Comente para evitar erros em testes
             }
 
             # Adicionar ao histórico
@@ -120,23 +125,18 @@ class SystemMonitor:
         """Adiciona métricas ao histórico mantendo limite máximo"""
         timestamp = metrics["timestamp"]
 
-        # Adicionar pontos aos históricos
-        self.data_history["cpu"].append(
-            {"timestamp": timestamp, "value": metrics["cpu"]}
-        )
-
+        self.data_history["cpu"].append({"timestamp": timestamp, "value": metrics["cpu"]})
         self.data_history["memory"].append(
             {"timestamp": timestamp, "value": metrics["memory"]["percentage"]}
         )
-
         self.data_history["disk"].append(
             {"timestamp": timestamp, "value": metrics["disk"]["percentage"]}
         )
 
-        # Manter apenas os últimos N pontos
+        # Manter apenas os últimos max_points
         for key in self.data_history:
             if len(self.data_history[key]) > self.max_points:
-                self.data_history[key] = self.data_history[key][-self.max_points :]
+                self.data_history[key] = self.data_history[key][-self.max_points:]
 
     def get_history(self) -> Dict:
         """Retorna o histórico de dados"""

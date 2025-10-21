@@ -188,4 +188,11 @@ if __name__ == "__main__":
     print("\nPressione Ctrl+C para parar o servidor")
     print("=" * 70)
 
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True, use_reloader=False, allow_unsafe_werkzeug=True)
+    socketio.run(
+        app,
+        host="0.0.0.0",
+        port=5000,
+        debug=True,
+        use_reloader=False,
+        allow_unsafe_werkzeug=True,
+    )
