@@ -25,22 +25,30 @@ Este projeto implementa um painel de monitoramento DevOps em tempo real usando:
 
 ## 📁 Estrutura do Repositório
 
-<<<<<<< HEAD
-
-=======
 devops_monitor_flask/
->>>>>>> d2e6433 (Fase 2: Redis + Celery + Docker Compose integrados)
+
 ├── app.py
+
 ├── celery_worker.py
+
 ├── config.py
+
 ├── monitoring.py
+
 ├── tasks.py
+
 ├── websocket_handler.py
+
 ├── test_monitoring.py
+
 ├── requirements.txt
+
 ├── .gitignore
+
 ├── Dockerfile
+
 ├── docker-compose.yml
+
 ├── README.md
 └──
     ├── static/
