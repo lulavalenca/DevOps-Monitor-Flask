@@ -6,6 +6,10 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret-key-change-in-production"
     REDIS_URL = os.environ.get("REDIS_URL") or "redis://localhost:6379/0"
 
+    # Celery Configuration
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
+
     # Configurações de monitoramento
     MONITORING_INTERVAL = 5  # segundos
     MAX_DATA_POINTS = 100  # máximo de pontos no gráfico

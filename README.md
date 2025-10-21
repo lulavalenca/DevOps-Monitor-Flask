@@ -25,21 +25,30 @@ Este projeto implementa um painel de monitoramento DevOps em tempo real usando:
 
 ## 📁 Estrutura do Repositório
 
+<<<<<<< HEAD
 
+=======
+devops_monitor_flask/
+>>>>>>> d2e6433 (Fase 2: Redis + Celery + Docker Compose integrados)
 ├── app.py
+├── celery_worker.py
 ├── config.py
 ├── monitoring.py
+├── tasks.py
 ├── websocket_handler.py
 ├── test_monitoring.py
 ├── requirements.txt
 ├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
 ├── README.md
 └──
-├── static/
-│ ├── css/style.css
-│ ├── js/main.js
-│ └── images/
-└── templates/index.html
+    ├── static/
+    │   ├── css/style.css
+    │   ├── js/main.js
+    │   └── images/
+    └── templates/index.html
+
 
 
 
@@ -49,14 +58,51 @@ Este projeto implementa um painel de monitoramento DevOps em tempo real usando:
 3. `python app.py`  
 4. Acesse `http://localhost:5000`  
 
-## 🎯 Próximos Passos
-- Redis + Celery para tasks assíncronas  
-- Docker Compose para orquestração  
-- Ansible para deploy  
-- Prometheus + Grafana  
-- Notificações por Email/Slack/Teams  
+🚀 Fase 2 – Redis + Celery + Docker Compose
+O que foi implementado
+Redis para cache e broker de mensagens
 
-## 📜 Licença
+Celery para processamento assíncrono de tasks
+
+Docker Compose para orquestrar Redis, Flask e Celery
+
+Endpoint /api/test-celery para validação de tasks
+
+Como rodar em Docker
+docker-compose down
+
+docker-compose up --build -d
+
+Acesse http://localhost:5000
+
+Teste Celery: http://localhost:5000/api/test-celery
+
+Testes Manuais
+REST:
+
+GET /api/metrics
+
+GET /api/history
+
+GET /api/clients
+
+GET /api/health
+
+WebSocket: abra o dashboard e observe log de clientes conectados
+
+Celery: verifique no log do worker as tarefas de Redis
+
+🎯 Próximos Passos (Fase 3+)
+Testes automatizados (pytest)
+
+Pipeline CI/CD (GitHub Actions: lint, test, build, push Docker)
+
+Ansible para deploy automatizado
+
+Prometheus + Grafana para métricas e dashboards avançados
+
+Notificações reais por Email, Slack e Teams via Celery
+
+📜 Licença
 MIT License
-
 

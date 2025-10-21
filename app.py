@@ -6,6 +6,7 @@ from flask_socketio import SocketIO
 import threading
 import time
 from datetime import datetime
+from tasks import save_metrics_to_redis, send_alert
 
 
 # Inicializar Flask app
@@ -138,6 +139,26 @@ def health_check():
     )
 
 
+@app.route("/api/test-celery")
+def test_celery():
+    """Testar Celery - Dispara uma task de teste"""
+    try:
+        # Disparar task assincrona
+        result = save_metrics_to_redis.delay(
+            {"test": "data", "timestamp": datetime.now().isoformat()}
+        )
+
+        return jsonify(
+            {
+                "status": "success",
+                "message": "Task Celery disparada!",
+                "task_id": result.id,
+            }
+        )
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
 def start_monitoring():
     """Inicia thread de monitoramento"""
     global monitoring_thread
@@ -167,4 +188,4 @@ if __name__ == "__main__":
     print("\nPressione Ctrl+C para parar o servidor")
     print("=" * 70)
 
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True, use_reloader=False, allow_unsafe_werkzeug=True)

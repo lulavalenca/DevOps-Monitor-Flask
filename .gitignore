@@ -15,3 +15,7 @@ dist/
 *.egg-info/
 wheels/
 .ipynb_checkpoints/
+# Docker
+docker-compose.override.yml
+*.dockerignore
+.env
